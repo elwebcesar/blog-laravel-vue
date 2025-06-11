@@ -1,0 +1,18 @@
+# Excluir carpetas que empiezan con --
+/--*/
+
+# Node.js
+node_modules/
+frontend-vue/node_modules/
+
+# macOS
+.DS_Store
+
+# Entornos de desarrollo Laravel
+#backend-laravel/.env
+backend-laravel/vendor/
+backend-laravel/storage/logs/
+
+# Vue/Node
+frontend-vue/dist/
+frontend-vue/.env

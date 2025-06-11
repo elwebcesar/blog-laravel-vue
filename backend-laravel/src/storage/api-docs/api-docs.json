@@ -1,0 +1,912 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ApiPost - linuxitos",
+        "description": "API con login, registro, actualización de información de usuario, perfil, listar posts, agregar, actualizar y eliminar posts. Obtiene token de inicio de sesión y se valida temporalidad.",
+        "contact": {
+            "email": "contact@linuxitos.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api/v1/",
+            "description": "Servidor local de desarrollo"
+        }
+    ],
+    "paths": {
+        "/api/v1/signup": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrar nuevo usuario",
+                "operationId": "610a41728b3494220ce9dd3bb242586a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@correo.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario registrado correctamente"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Iniciar sesión",
+                "operationId": "da2ca4d7a5cdec77b8b45a20373535cb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@correo.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión exitoso"
+                    },
+                    "401": {
+                        "description": "Credenciales incorrectas"
+                    },
+                    "403": {
+                        "description": "Cuenta inactiva"
+                    }
+                }
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Cerrar sesión",
+                "operationId": "c4eddaf1a2e990cc90e4326c0d731d41",
+                "responses": {
+                    "200": {
+                        "description": "Sesión finalizada correctamente"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Renovar token de acceso",
+                "operationId": "dcac181f8e5a2cac60e56343422aaadb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "AbCdEf123456..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token renovado correctamente"
+                    },
+                    "400": {
+                        "description": "Token requerido"
+                    },
+                    "401": {
+                        "description": "Token inválido"
+                    }
+                }
+            }
+        },
+        "/api/v1/module": {
+            "post": {
+                "tags": [
+                    "Módulos"
+                ],
+                "summary": "Obtener lista o un módulo específico",
+                "operationId": "5aaf14329038753326235ff3a095fc47",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID del módulo",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "module_id",
+                        "in": "query",
+                        "description": "ID del módulo padre",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado de módulos obtenido correctamente"
+                    },
+                    "401": {
+                        "description": "Token inválido o expirado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/module/delete": {
+            "post": {
+                "tags": [
+                    "Módulos"
+                ],
+                "summary": "Eliminar un módulo por ID",
+                "operationId": "3bd334b88a8b40a345294297f374f3cb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "ID del módulo a eliminar",
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Módulo eliminado correctamente"
+                    },
+                    "404": {
+                        "description": "Módulo no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/module/save": {
+            "post": {
+                "tags": [
+                    "Módulos"
+                ],
+                "summary": "Crear o actualizar un módulo",
+                "operationId": "0101a854f64f8dfe5a36e50376bde6e0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Dashboard"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Módulo principal"
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "example": "fa-dashboard"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "menu"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "/dashboard"
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "example": "#ff6600"
+                                    },
+                                    "show": {
+                                        "type": "string",
+                                        "example": "panel"
+                                    },
+                                    "active": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "module_id": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Módulo creado o actualizado correctamente"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/post": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Obtener listado o un post específico",
+                "operationId": "d7a7efb2146ca180ae57a075f0761e47",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID del post a consultar. Si no se envía, devuelve la lista",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página (opcional)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad por página",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Texto de búsqueda",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filtrar por estado",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "description": "Campo por el que ordenar",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "asc o desc",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado de registros"
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/post/delete": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Eliminar un post",
+                "operationId": "c155c0e641be82530e45e20e62901aef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "ID del post a eliminar",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post eliminado correctamente"
+                    },
+                    "404": {
+                        "description": "Post no encontrado o no pertenece al usuario"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/post/save": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Crear o actualizar un post",
+                "operationId": "d4d42ea858c828b8f931938c80c1e392",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID del post. Si es 0 o no se envía, se crea uno nuevo.",
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Mi primer post"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Contenido del post"
+                                    },
+                                    "status": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post creado o actualizado correctamente"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/update": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Actualizar perfil del usuario autenticado",
+                "operationId": "aac6294085079e6659c990fadc85422b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "password_current": {
+                                        "type": "string",
+                                        "example": "claveactual123"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "nuevaclave123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "nuevaclave123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Perfil actualizado correctamente"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/avatar": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Actualizar avatar del usuario",
+                "operationId": "0cc36c2b9fccaf2f09c1188d05520e58",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "avatar"
+                                ],
+                                "properties": {
+                                    "avatar": {
+                                        "description": "Archivo de imagen (jpg, png, webp)",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Avatar actualizado con éxito"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/mypermits": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtener permisos del usuario autenticado",
+                "operationId": "07dfcf34579543cba9a54fa5dd5a3c47",
+                "responses": {
+                    "200": {
+                        "description": "Permisos obtenidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/assignpermit": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Asignar o revocar permiso a un usuario",
+                "operationId": "7902fec9173ac156d236c68effbd9623",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "sub"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "ID del usuario",
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "sub": {
+                                        "description": "ID del submódulo",
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "status": {
+                                        "description": "true para asignar, false para revocar",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Permiso actualizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtener lista de usuarios o uno específico",
+                "operationId": "56b2198f4dbcffb2f3f482752edc633f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "order_by",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado obtenido"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/delete": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Eliminar usuario por ID",
+                "operationId": "49faf613aa1d6a4c2633fc45af9939dd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado correctamente"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/save": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Crear o actualizar un usuario",
+                "operationId": "00a4f5ddc51898a33e548ce7d9ad669d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "Si se envía, se actualiza el usuario",
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Pedro"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "pedro@correo.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "status": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario registrado o actualizado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Endpoints de autenticación"
+        },
+        {
+            "name": "Módulos",
+            "description": "Operaciones para gestionar módulos del sistema"
+        },
+        {
+            "name": "Posts",
+            "description": "Operaciones CRUD para posts del usuario autenticado"
+        },
+        {
+            "name": "Usuarios",
+            "description": "Operaciones relacionadas con usuarios"
+        }
+    ]
+}
