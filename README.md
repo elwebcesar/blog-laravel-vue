@@ -28,7 +28,7 @@ Volumenes:
 
 ### 1. Backend
 
-####Contenedor Docker (si se usa)
+#### Contenedor Docker (si se usa)
 
 Montar contenedor (solo si se usa docker)
 `docker-compose up -d`
@@ -44,7 +44,7 @@ En mi caso el contenedor interactivo
 
 ---
 
-####Laravel
+#### Laravel
 
 Si se uso el contenedor suministrado, se debe acceder al contenedor de la aplicación.*
  _Punto anterior._
@@ -65,8 +65,8 @@ Configurar datase.php según los parámetros.
 #####Se suministra SQL con datos: laravel_backup_20250611.sql
 
 ---
-### 1. Frontend
-####Vue
+### 2. Frontend
+#### Vue
 Proyecto creado con Vue CLI 
 
 `npm run serve`
@@ -82,16 +82,16 @@ Proyecto creado con Vue CLI
 | Crear / Editar Post | http://127.0.0.1:8000/api/v1/post/save        |   SI |
 | Borrar Post | http://127.0.0.1:8000/api/v1/post/delete        |    SI |
 
-#####Se suministra Colección de Postman: Laravel blog.postman_collection.json
+##### Se suministra Colección de Postman: Laravel blog.postman_collection.json
 
 ---
 ## Credenciales de Acceso al Admin
-#####elwebcesar@gmail.com
-#####holamundo
+##### elwebcesar@gmail.com
+##### holamundo
 
 
 ---
 
-###Proyecto by Cesar Fernandez
+### Proyecto by Cesar Fernandez
 https://www.linkedin.com/in/cesar-design/
 https://www.behance.net/cesarfernandezdesign
