@@ -62,7 +62,7 @@ Generar la clave de la aplicación
 
 Configurar datase.php según los parámetros.
 
-#####Se suministra SQL con datos: laravel_backup_20250611.sql
+##### Se suministra SQL con datos: laravel_backup_20250611.sql
 
 ---
 ### 2. Frontend
@@ -93,5 +93,5 @@ Proyecto creado con Vue CLI
 ---
 
 ### Proyecto by Cesar Fernandez
-https://www.linkedin.com/in/cesar-design/
-https://www.behance.net/cesarfernandezdesign
+###### https://www.linkedin.com/in/cesar-design/
+###### https://www.behance.net/cesarfernandezdesign
